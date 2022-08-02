@@ -8,23 +8,35 @@ const showNFT = () => {
 
   const getAllNfts = async () => {
     const response = await axios(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/v3/nft/address/balance/MATIC/0xf48cd0f94724c21e9b1e4209fe91c86c0cc8e24a`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/v3/nft/address/balance/MATIC/${walletAddress}`,
       {
         headers: {
-            "x-api-key": "40d3e0f6-9de3-4d86-837f-67323ff3b3a2",
-            "content-type": "application/json"
-        }
-    }
+          "x-api-key": process.env.NEXT_PUBLIC_API_KEY,
+          "content-type": "application/json",
+        },
+      }
     );
-    console.log(response);
-    setMetadata(response);
+    setMetadata(response?.data?.metadata);
   };
 
   useEffect(() => {
     getAllNfts();
   }, []);
 
-  return <div>My NFTS</div>;
+  return (
+    <div>
+      My NFTS
+      <div>
+        {metadata?.map((item) => {
+          <>
+            <img src={metadata?.image} alt="nft" />
+            <h3>{item?.name}</h3>
+            <p>{item?.description}</p>
+          </>;
+        })}
+      </div>
+    </div>
+  );
 };
 
 export default showNFT;

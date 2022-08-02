@@ -1,9 +1,11 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const mint = () => {
   const walletAddress =
     typeof window !== "undefined" ? localStorage.getItem("walletAddress") : "";
+  const router = useRouter();
   const [image, setImage] = useState();
   const [ipfsImgHash, setIpfsImgHash] = useState();
   const [title, setTitle] = useState();
@@ -46,7 +48,6 @@ const mint = () => {
           chain: "MATIC",
           to: walletAddress,
           url: uploadResponse.data.ipfsHash,
-         
         };
         const nftResponse = await axios.post(
           `${process.env.NEXT_PUBLIC_BASE_URL}/v3/nft/mint`,
@@ -65,16 +66,47 @@ const mint = () => {
     }
   }, [ipfsImgHash]);
 
+  //for checking if connected or not
+  useEffect(() => {
+    if (!walletAddress) {
+      router.push("/");
+    }
+  }, [walletAddress]);
+
   return (
     <div className="mintContainer">
-      <h1>Mint a NFT</h1>
-      <label>Image</label>
-      <input type="file" onChange={(e) => setImage(e.target.files[0])} />
-      <label>title</label>
-      <input type="text" onChange={(e) => setTitle(e.target.value)} />
-      <label>description</label>
-      <input type="text" onChange={(e) => setDesc(e.target.value)} />
-      <button onClick={() => uploadToIPFS()}>Mint</button>
+      <div className="header">
+        <h1>Minting Now 🚀</h1>
+        <div className="headerRight">
+          <button className="disconnectBtn">Disconnect</button>
+        </div>
+      </div>
+
+      <div className="bannerContainer">
+        <img
+          src={image ? URL.createObjectURL(image) : "/banner.jpg"}
+          alt="bannerNft"
+        />
+      </div>
+
+      <div className="forms">
+        <input type="file" onChange={(e) => setImage(e.target.files[0])} />
+        <input
+          type="text"
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Name "
+        />
+        <input
+          type="text"
+          onChange={(e) => setDesc(e.target.value)}
+          placeholder="Description"
+          className="descInput"
+        />
+        <button className="mintBtn" onClick={() => uploadToIPFS()}>
+          Mint
+        </button>
+        <button className="btn" onClick={() => router.push('/showNFT')}>See Nfts</button>
+      </div>
     </div>
   );
 };

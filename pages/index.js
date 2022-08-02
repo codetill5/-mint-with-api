@@ -22,7 +22,7 @@ const index = () => {
     <div className="container">
       <h1>Connect Your Metamask 🦊</h1>
       <button onClick={() => connectMetamask()} className="btn">Connect</button>
-      {walletAddress ? walletAddress : ""}
+      {/* {walletAddress ? walletAddress : ""} */}
     </div>
   );
 };
